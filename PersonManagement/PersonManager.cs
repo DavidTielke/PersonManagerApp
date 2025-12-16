@@ -1,5 +1,16 @@
-﻿namespace ConsoleClient;
+﻿
+using DavidTielke.PMA.CrossCutting.DataClasses;
+using DavidTielke.PMA.Data.DataStoring;
 
+namespace DavidTielke.PMA.Logic.PersonManagement;
+
+public class PersonValidator
+{
+    public bool IsValid()
+    {
+        return default;
+    }
+}
 public class PersonManager
 {
     private readonly PersonRepository _personRepository;
@@ -7,6 +18,11 @@ public class PersonManager
     public PersonManager()
     {
         _personRepository = new PersonRepository();
+    }
+
+    public void Copy()
+    {
+
     }
 
     public IQueryable<Person> GetAllAdults()

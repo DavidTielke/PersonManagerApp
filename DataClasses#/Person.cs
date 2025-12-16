@@ -1,4 +1,4 @@
-﻿namespace ConsoleClient;
+﻿namespace DavidTielke.PMA.CrossCutting.DataClasses;
 
 public class Person
 {
@@ -8,7 +8,7 @@ public class Person
 
     public Person()
     {
-            
+
     }
     public Person(string name, int age, int id)
     {
