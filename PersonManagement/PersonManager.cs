@@ -1,28 +1,15 @@
-﻿
-using DavidTielke.PMA.CrossCutting.DataClasses;
+﻿using DavidTielke.PMA.CrossCutting.DataClasses;
 using DavidTielke.PMA.Data.DataStoring;
 
-namespace DavidTielke;
+namespace DavidTielke.PMA.Logic.PersonManagement;
 
-public class PersonValidator
+public class PersonManager : IPersonManager
 {
-    public bool IsValid()
-    {
-        return default;
-    }
-}
-public class PersonManager
-{
-    private readonly PersonRepository _personRepository;
+    private readonly IPersonRepository _personRepository;
 
-    public PersonManager()
+    public PersonManager(IPersonRepository personRepository)
     {
-        _personRepository = new PersonRepository();
-    }
-
-    public void Copy()
-    {
-
+        _personRepository = personRepository;
     }
 
     public IQueryable<Person> GetAllAdults()

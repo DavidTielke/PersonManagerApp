@@ -1,5 +1,6 @@
 using DavidTielke;
 using DavidTielke.PMA.CrossCutting.DataClasses;
+using DavidTielke.PMA.Logic.PersonManagement;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ServiceClient.Controllers
