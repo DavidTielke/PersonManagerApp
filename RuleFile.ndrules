@@ -30,6 +30,7 @@ let patternCatalogue = new string[]
   "Parser",
   "Reader",
   "DisplayCommands",
+  "Initializer",
 
   "Program"
 }
@@ -169,6 +170,34 @@ let allowedMethods = new string[]
 let allowedPrefixes = new string[]
 {
   "Display"
+}
+
+let managementClasses = JustMyCode.Types.Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses")
+                                                 && !t.IsGeneratedByCompiler && t.SimpleName.EndsWith(pattern))
+
+from t in managementClasses
+
+let illegalMethods = t.Methods.Where(m => !allowedMethods.Any(am => m.SimpleName == am)
+                                        && !allowedPrefixes.Any(ap => m.SimpleName.StartsWith(ap)))
+
+where illegalMethods.Any()
+
+select new { t, illegalMethods  }
+]]></Query>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Initializer"</Name>
+warnif count > 0 
+
+let pattern = "Initializer"
+
+let allowedMethods = new string[]
+{
+  "Initialize",
+
+}
+
+let allowedPrefixes = new string[]
+{
+
 }
 
 let managementClasses = JustMyCode.Types.Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses")

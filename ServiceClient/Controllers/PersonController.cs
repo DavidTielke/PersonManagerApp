@@ -9,11 +9,11 @@ namespace ServiceClient.Controllers
     [Route("[controller]")]
     public class PersonController : ControllerBase
     {
-        private readonly PersonManager _personManager;
+        private readonly IPersonManager _personManager;
 
-        public PersonController()
+        public PersonController(IPersonManager personManager)
         {
-            _personManager = new PersonManager();
+            _personManager = personManager;
         }
 
         [HttpGet()]
