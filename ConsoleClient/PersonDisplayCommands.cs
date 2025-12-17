@@ -1,4 +1,4 @@
-﻿using DavidTielke.PMA.Logic.PersonManagement;
+﻿using DavidTielke;
 
 namespace DavidTielke.PMA.UI.ConsoleClient;
 

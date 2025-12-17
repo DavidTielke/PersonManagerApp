@@ -19,7 +19,8 @@ where !m.IsPropertyGetter && !m.IsPropertySetter
 
 select new { m.Parent, m, m.NbLinesOfCode, m.CyclomaticComplexity, Severity = Severity.Info, Debt = 10.ToMinutes().ToDebt() }]]></Query>
   <Group Name="Namensmuster" Active="True" ShownInReport="False">
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Alle Klassen sind Musterkonsistent</Name>
+    <Group Name="Klassen" Active="True" ShownInReport="False">
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Alle Klassen sind Musterkonsistent</Name>
 warnif count > 0 
 
 let patternCatalogue = new string[]
@@ -41,7 +42,7 @@ from t in managementClasses
 where !patternCatalogue.Any(pn => t.SimpleName.EndsWith(pn))
 
 select new { t, Severity = Severity.Blocker }]]></Query>
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Manager"</Name>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Manager"</Name>
 warnif count > 0 
 
 let pattern = "Manager"
@@ -71,7 +72,7 @@ let illegalMethods = t.Methods.Where(m => !allowedMethods.Any(am => m.SimpleName
 where illegalMethods.Any()
 
 select new { t, illegalMethods  }]]></Query>
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Repository"</Name>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Repository"</Name>
 warnif count > 0 
 
 let pattern = "Repository"
@@ -101,7 +102,7 @@ where illegalMethods.Any()
 
 select new { t, illegalMethods  }
 ]]></Query>
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Parser"</Name>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Parser"</Name>
 warnif count > 0 
 
 let pattern = "Parser"
@@ -128,7 +129,7 @@ where illegalMethods.Any()
 
 select new { t, illegalMethods  }
 ]]></Query>
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Reader"</Name>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "Reader"</Name>
 warnif count > 0 
 
 let pattern = "Reader"
@@ -155,7 +156,7 @@ where illegalMethods.Any()
 
 select new { t, illegalMethods  }
 ]]></Query>
-    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "DisplayCommands"</Name>
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Namensmuster "DisplayCommands"</Name>
 warnif count > 0 
 
 let pattern = "DisplayCommands"
@@ -182,5 +183,85 @@ where illegalMethods.Any()
 
 select new { t, illegalMethods  }
 ]]></Query>
+    </Group>
+    <Group Name="Komponenten" Active="True" ShownInReport="False">
+      <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Alle Komponenten sind Musterkonsistent</Name>
+warnif count > 0 
+
+let patternCatalogue = new string[]
+{
+  "Client",
+  "Storing",
+  "Management",
+
+  "DataClasses"
+}
+
+let components = JustMyCode.Assemblies
+
+from t in components 
+
+where !patternCatalogue.Any(pn => t.SimpleName.EndsWith(pn))
+
+select new { t, Severity = Severity.Blocker }
+]]></Query>
+    </Group>
+  </Group>
+  <Group Name="DataClasses" Active="True" ShownInReport="False">
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Datenklassen hat keine Methoden</Name>
+
+let dataClasses = JustMyCode.Types.Where(t => t.ParentNamespace.FullName.Contains(".DataClasses"))
+
+from t in dataClasses
+
+let methods = t.Methods.Where(m => !m.IsPropertyGetter && !m.IsPropertySetter)
+
+where methods.Any()
+
+select new { t, methods  }]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Datenklassen haben nur std. ctor</Name>
+
+let dataClasses = JustMyCode.Types.Where(t => t.ParentNamespace.FullName.Contains(".DataClasses"))
+
+from t in dataClasses
+
+let illegalConstructors = t.Constructors.Where(c => c.NbParameters > 0)
+
+select new { t, illegalConstructors }
+
+]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Datenklassen referenzieren nur Datenklassen</Name>
+
+let dataClasses = JustMyCode.Types.Where(t => t.ParentNamespace.FullName.Contains(".DataClasses"))
+
+from t in dataClasses
+
+let illegalTypes = t.TypesUsed.Where(tu => !tu.IsThirdParty && !tu.ParentNamespace.FullName.Contains(".DataClasses"))
+
+where illegalTypes.Any()
+
+select new { t, illegalTypes }
+
+]]></Query>
+  </Group>
+  <Group Name="Namespaces" Active="True" ShownInReport="False">
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Korrekte Namespace Prefixe</Name>
+warnif count > 0 
+
+let namespaces = JustMyCode.Namespaces
+
+let allowedPrefixes = new string[]
+{
+ "DavidTielke.PMA.CrossCutting",
+ "DavidTielke.PMA.Logic",
+ "DavidTielke.PMA.Data",
+ "DavidTielke.PMA.UI",
+}
+
+from ns in namespaces
+
+where !allowedPrefixes.Any(ap => ns.FullName.StartsWith(ap))
+
+select new { ns }]]></Query>
   </Group>
 </Queries>

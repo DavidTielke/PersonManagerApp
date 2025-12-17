@@ -2,7 +2,7 @@
 using DavidTielke.PMA.CrossCutting.DataClasses;
 using DavidTielke.PMA.Data.DataStoring;
 
-namespace DavidTielke.PMA.Logic.PersonManagement;
+namespace DavidTielke;
 
 public class PersonValidator
 {

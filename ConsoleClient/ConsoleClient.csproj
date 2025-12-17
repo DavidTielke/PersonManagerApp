@@ -9,13 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="data.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Compile Remove="DataClasses\**" />
+    <EmbeddedResource Remove="DataClasses\**" />
+    <None Remove="DataClasses\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DataClasses\" />
+    <None Update="data.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
