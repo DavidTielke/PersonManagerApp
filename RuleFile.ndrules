@@ -293,4 +293,49 @@ where !allowedPrefixes.Any(ap => ns.FullName.StartsWith(ap))
 
 select new { ns }]]></Query>
   </Group>
+  <Group Name="Abhängigkeiten" Active="True" ShownInReport="False">
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Keine statischen Klassen</Name>
+warnif count > 0 
+
+from t in JustMyCode.Types
+
+where t.IsStatic && !t.IsGeneratedByCompiler
+
+select new { t }]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Keine statischen Methoden</Name>
+warnif count > 0 
+
+from m in JustMyCode.Methods
+
+where !m.IsPropertyGetter && !m.IsPropertySetter && !m.IsConstructor && !m.IsGeneratedByCompiler
+
+ && m.IsStatic && !m.SimpleName.Contains("Main")
+
+
+select new { m }]]></Query>
+    <Query Active="True" DisplayList="True" DisplayStat="False" DisplaySelectionView="False" IsCriticalRule="False"><![CDATA[// <Name>Keine Implementierungsabhängigkeiten</Name>
+warnif count > 0 
+
+let blacklist = new string[]
+{
+  "Program",
+  "ServiceCollectionInitializer"
+}
+
+let managementClasses = JustMyCode.Types.Where(t => !t.ParentNamespace.FullName.Contains(".DataClasses")
+                                                 && !t.IsGeneratedByCompiler
+                                                 && t.IsClass
+                                                 && !blacklist.Any(blc => t.SimpleName == blc))
+
+from t in managementClasses
+
+let illegalDependencies = t.TypesUsed.Where(tu => !tu.IsThirdParty 
+                                               && !tu.IsGeneratedByCompiler 
+                                               && !tu.ParentNamespace.FullName.Contains(".DataClasses")
+                                               && !tu.IsInterface)
+
+where illegalDependencies.Any()
+
+select new { t, illegalDependencies }]]></Query>
+  </Group>
 </Queries>
